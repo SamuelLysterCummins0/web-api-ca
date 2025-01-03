@@ -5,7 +5,11 @@ import {
     getUpcomingMovies,
     getGenres,
     getMovie,
-    getMovieImages
+    getMovieImages,
+    getMovieDetailsWithCredits,
+    getMovieRecommendations,
+    getTopRatedMovies,
+    getTrendingMovies
   } from '../tmdb-api';
 
 const router = express.Router();
@@ -32,10 +36,23 @@ router.get('/', asyncHandler(async (req, res) => {
     res.status(200).json(returnObject);
 }));
 
+
 // Get upcoming movies
 router.get('/upcoming', asyncHandler(async (req, res) => {
     const upcomingMovies = await getUpcomingMovies();
     res.status(200).json(upcomingMovies);
+}));
+
+// Get top rated movies
+router.get('/top_rated', asyncHandler(async (req, res) => {
+    const movies = await getTopRatedMovies();
+    res.status(200).json(movies);
+}));
+
+// Get trending movies
+router.get('/trending', asyncHandler(async (req, res) => {
+    const movies = await getTrendingMovies();
+    res.status(200).json(movies);
 }));
 
 // Get movie genres
@@ -44,11 +61,18 @@ router.get('/genre/list', asyncHandler(async (req, res) => {
     res.status(200).json(genres);
 }));
 
-// Get movie details by ID
-router.get('/:id', asyncHandler(async (req, res) => {
+// Get movie credits
+router.get('/:id/credits', asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const movie = await getMovie(id);
+    const movie = await getMovieDetailsWithCredits(id);
     res.status(200).json(movie);
+}));
+
+// Get movie recommendations
+router.get('/:id/recommendations', asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id);
+    const recommendations = await getMovieRecommendations(id);
+    res.status(200).json(recommendations);
 }));
 
 // Get movie images
@@ -56,6 +80,13 @@ router.get('/:id/images', asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     const images = await getMovieImages(id);
     res.status(200).json(images);
+}));
+
+// Get movie details by ID (keep this last)
+router.get('/:id', asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id);
+    const movie = await getMovie(id);
+    res.status(200).json(movie);
 }));
 
 export default router;
