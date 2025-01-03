@@ -51,3 +51,4 @@ Describe how you integrated your React app with the API. List the views that use
 ## Independent learning (if relevant)
 
 Briefly explain any non-standard features developed for the app.   
+"Created CA2 repository; added README template"
