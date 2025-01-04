@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
@@ -35,10 +36,16 @@ const SiteHeader = ({ history }) => {
 
   const handleMenuSelect = (pageURL) => {
     navigate(pageURL, { replace: true });
+    setAnchorEl(null);
   };
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   return (
@@ -98,8 +105,15 @@ const SiteHeader = ({ history }) => {
                     {opt.label}
                   </Button>
                 ))}
-              </>
-            )}
+                 <Button 
+                color="inherit" 
+                onClick={handleLogout}
+                startIcon={<LogoutIcon />}
+              >
+                Logout
+              </Button>
+            </>
+          )}
         </Toolbar>
       </AppBar>
       <Offset />

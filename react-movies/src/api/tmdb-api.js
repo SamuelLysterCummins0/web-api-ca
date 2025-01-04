@@ -1,32 +1,34 @@
 const BASE_URL = 'http://localhost:8080/api';
 
-const getAuthToken = () => {
-    return localStorage.getItem('token');
+const getHeaders = () => {
+    const token = localStorage.getItem('token');
+    return {
+        'Authorization': token,  // token from login already includes "BEARER"
+        'Content-Type': 'application/json'
+    };
 };
 
 export const getMovies = () => {
     return fetch(`${BASE_URL}/movies`, {
-        headers: {
-            'Authorization': `BEARER ${getAuthToken()}`
-        }
-    }).then((response) => {
+        headers: getHeaders()
+    }).then(async (response) => {
         if (!response.ok) {
-            throw new Error(response.json().message);
+            const text = await response.text();
+            console.log("Error response:", text);
+            throw new Error(text);
         }
         return response.json();
     }).catch((error) => {
+        console.error("Full error:", error);
         throw error;
     });
 };
 
 export const getMovie = (args) => {
-    console.log(args);
     const [, idPart] = args.queryKey;
     const { id } = idPart;
     return fetch(`${BASE_URL}/movies/${id}`, {
-        headers: {
-            'Authorization': `BEARER ${getAuthToken()}`
-        }
+        headers: getHeaders()
     }).then((response) => {
         if (!response.ok) {
             throw new Error(response.json().message);
@@ -39,17 +41,13 @@ export const getMovie = (args) => {
 
 export const getMovieDetailsWithCredits = (id) => {
     return fetch(`${BASE_URL}/movies/${id}/credits`, {
-        headers: {
-            'Authorization': `BEARER ${getAuthToken()}`
-        }
+        headers: getHeaders()
     }).then(response => response.json());
 };
 
 export const getGenres = async () => {
     return fetch(`${BASE_URL}/movies/genre/list`, {
-        headers: {
-            'Authorization': `BEARER ${getAuthToken()}`
-        }
+        headers: getHeaders()
     }).then((response) => {
         if (!response.ok) {
             throw new Error(response.json().message);
@@ -62,9 +60,7 @@ export const getGenres = async () => {
 
 export const getUpcoming = async () => {
     return fetch(`${BASE_URL}/movies/upcoming`, {
-        headers: {
-            'Authorization': `BEARER ${getAuthToken()}`
-        }
+        headers: getHeaders()
     }).then((response) => {
         if (!response.ok) {
             throw new Error(response.json().message);
@@ -77,9 +73,7 @@ export const getUpcoming = async () => {
 
 export const getMovieRecommendations = (id) => {
     return fetch(`${BASE_URL}/movies/${id}/recommendations`, {
-        headers: {
-            'Authorization': `BEARER ${getAuthToken()}`
-        }
+        headers: getHeaders()
     }).then(response => {
         if (!response.ok) {
             throw new Error(response.json().message);
@@ -90,9 +84,7 @@ export const getMovieRecommendations = (id) => {
 
 export const getTopRatedMovies = () => {
     return fetch(`${BASE_URL}/movies/top_rated`, {
-        headers: {
-            'Authorization': `BEARER ${getAuthToken()}`
-        }
+        headers: getHeaders()
     }).then((response) => {
         if (!response.ok) {
             throw new Error(response.json().message);
@@ -105,9 +97,7 @@ export const getMovieImages = ({ queryKey }) => {
     const [, idPart] = queryKey;
     const { id } = idPart;
     return fetch(`${BASE_URL}/movies/${id}/images`, {
-        headers: {
-            'Authorization': `BEARER ${getAuthToken()}`
-        }
+        headers: getHeaders()
     }).then((response) => {
         if (!response.ok) {
             throw new Error(response.json().message);
@@ -120,20 +110,16 @@ export const getMovieImages = ({ queryKey }) => {
 
 export const getMovieReviews = (id) => {
     return fetch(`${BASE_URL}/reviews/movie/${id}`, {
-        headers: {
-            'Authorization': `BEARER ${getAuthToken()}`
-        }
+        headers: getHeaders()
     }).then((res) => res.json())
     .then((json) => {
-        return json;  // Using our API's review format
+        return json;
     });
 };
 
 export const getTrendingMovies = () => {
     return fetch(`${BASE_URL}/movies/trending`, {
-        headers: {
-            'Authorization': `BEARER ${getAuthToken()}`
-        }
+        headers: getHeaders()
     }).then((response) => {
         if (!response.ok) {
             throw new Error(response.json().message);

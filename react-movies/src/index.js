@@ -27,9 +27,14 @@ const queryClient = new QueryClient({
   },
 });
 
-const ProtectedRoute = ({ element: Element }) => {
+// Similar to authenticate middleware in movies-api
+const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
-  return token ? Element : <Navigate to="/login" />;
+  if (!token) {
+    // Redirect similar to API's error response
+    return <Navigate to="/login" replace />;
+  }
+  return children;
 };
 
 const App = () => {
@@ -39,17 +44,20 @@ const App = () => {
         <SiteHeader />
         <MoviesContextProvider>
           <Routes>
+            {/* Public route */}
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/movies/favorites" element={<ProtectedRoute element={<FavoriteMoviesPage />} />} />
-            <Route path="/reviews/:id" element={<ProtectedRoute element={<MovieReviewPage />} />} />
-            <Route path="/movies/:id" element={<ProtectedRoute element={<MoviePage />} />} />
-            <Route path="/movies/upcoming" element={<ProtectedRoute element={<UpcomingPage />} />} />
-            <Route path="/movies/trending" element={<ProtectedRoute element={<TrendingMoviesPage />} />} />
-            <Route path="/movies/topRated" element={<ProtectedRoute element={<TopRatedMoviesPage />} />} />
-            <Route path="/movies/mustWatch" element={<ProtectedRoute element={<MustWatchPage />} />} />
-            <Route path="/" element={<ProtectedRoute element={<HomePage />} />} />
+            
+            {/* Protected routes wrapped similar to API */}
+            <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+            <Route path="/movies/favorites" element={<ProtectedRoute><FavoriteMoviesPage /></ProtectedRoute>} />
+            <Route path="/reviews/:id" element={<ProtectedRoute><MovieReviewPage /></ProtectedRoute>} />
+            <Route path="/movies/:id" element={<ProtectedRoute><MoviePage /></ProtectedRoute>} />
+            <Route path="/movies/upcoming" element={<ProtectedRoute><UpcomingPage /></ProtectedRoute>} />
+            <Route path="/movies/trending" element={<ProtectedRoute><TrendingMoviesPage /></ProtectedRoute>} />
+            <Route path="/movies/topRated" element={<ProtectedRoute><TopRatedMoviesPage /></ProtectedRoute>} />
+            <Route path="/movies/mustWatch" element={<ProtectedRoute><MustWatchPage /></ProtectedRoute>} />
+            <Route path="/reviews/form" element={<ProtectedRoute><AddMovieReviewPage /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/" />} />
-            <Route path="/reviews/form" element={<ProtectedRoute element={<AddMovieReviewPage />} />} />
           </Routes>
         </MoviesContextProvider>
       </BrowserRouter>

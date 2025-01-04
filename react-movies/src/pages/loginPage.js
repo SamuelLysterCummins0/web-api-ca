@@ -7,17 +7,21 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError("");
         try {
             const response = await login(username, password);
             if (response.success) {
                 localStorage.setItem('token', response.token);
                 navigate('/');
+            } else {
+                setError("Invalid credentials");
             }
         } catch (err) {
-            console.error('Login failed:', err);
+            setError("Login failed. Please try again.");
         }
     };
 
@@ -32,6 +36,11 @@ const LoginPage = () => {
                 <Typography variant="h4" component="h1" gutterBottom>
                     Login
                 </Typography>
+                {error && (
+                    <Typography color="error" sx={{ mb: 2 }}>
+                        {error}
+                    </Typography>
+                )}
                 <form onSubmit={handleSubmit}>
                     <TextField
                         label="Username"
