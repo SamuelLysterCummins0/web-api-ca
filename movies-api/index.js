@@ -15,6 +15,10 @@ const port = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  credentials: true
+}));
 app.use('/api/users', usersRouter);
 app.use('/api/movies', authenticate, moviesRouter);
 app.use('/api/reviews', authenticate, reviewsRouter);

@@ -15,6 +15,7 @@ import MustWatchPage from "./pages/mustWatchPage.js";
 import TopRatedMoviesPage from "./pages/topRatedMoviesPage.js";
 import PopularMoviesPage from "./pages/trendingMoviesPage.js";
 import TrendingMoviesPage from "./pages/trendingMoviesPage.js";
+import LoginPage from "./pages/loginPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +26,12 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+const ProtectedRoute = ({ element: Element }) => {
+  const token = localStorage.getItem('token');
+  return token ? Element : <Navigate to="/login" />;
+};
+
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -32,16 +39,17 @@ const App = () => {
         <SiteHeader />
         <MoviesContextProvider>
           <Routes>
-            <Route path="/movies/favorites" element={<FavoriteMoviesPage />} />
-            <Route path="/reviews/:id" element={ <MovieReviewPage /> } />
-            <Route path="/movies/:id" element={<MoviePage />} />
-            <Route path="/movies/upcoming" element={<UpcomingPage />} />
-            <Route path="/movies/trending" element={<TrendingMoviesPage />} />
-            <Route path="/movies/topRated" element={<TopRatedMoviesPage />} />
-            <Route path="/movies/mustWatch" element={<MustWatchPage />} />
-            <Route path="/" element={<HomePage />} />
-            <Route path="*" element={ <Navigate to="/" /> } />
-            <Route path="/reviews/form" element={ <AddMovieReviewPage /> } />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/movies/favorites" element={<ProtectedRoute element={<FavoriteMoviesPage />} />} />
+            <Route path="/reviews/:id" element={<ProtectedRoute element={<MovieReviewPage />} />} />
+            <Route path="/movies/:id" element={<ProtectedRoute element={<MoviePage />} />} />
+            <Route path="/movies/upcoming" element={<ProtectedRoute element={<UpcomingPage />} />} />
+            <Route path="/movies/trending" element={<ProtectedRoute element={<TrendingMoviesPage />} />} />
+            <Route path="/movies/topRated" element={<ProtectedRoute element={<TopRatedMoviesPage />} />} />
+            <Route path="/movies/mustWatch" element={<ProtectedRoute element={<MustWatchPage />} />} />
+            <Route path="/" element={<ProtectedRoute element={<HomePage />} />} />
+            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="/reviews/form" element={<ProtectedRoute element={<AddMovieReviewPage />} />} />
           </Routes>
         </MoviesContextProvider>
       </BrowserRouter>
@@ -50,5 +58,5 @@ const App = () => {
   );
 };
 
-const rootElement = createRoot( document.getElementById("root") )
+const rootElement = createRoot(document.getElementById("root"))
 rootElement.render(<App />);
