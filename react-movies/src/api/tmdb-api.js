@@ -3,7 +3,7 @@ const BASE_URL = 'http://localhost:8080/api';
 const getHeaders = () => {
     const token = localStorage.getItem('token');
     return {
-        'Authorization': token,  // token from login already includes "BEARER"
+        'Authorization': token,  
         'Content-Type': 'application/json'
     };
 };

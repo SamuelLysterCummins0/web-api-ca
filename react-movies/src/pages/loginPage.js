@@ -8,22 +8,48 @@ const LoginPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [isSignUp, setIsSignUp] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-        try {
-            const response = await login(username, password);
-            if (response.success) {
-                localStorage.setItem('token', response.token);
-                navigate('/');
+            if (isSignUp) {
+
+                const response = await fetch('http://localhost:8080/api/users?action=register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        username, 
+                        password,
+                        favorites: [], 
+                        mustWatch: []
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const loginResponse = await login(username, password);
+                    localStorage.removeItem('token');
+                    localStorage.setItem('token', loginResponse.token);
+                    navigate('/');  
+                    window.location.reload(); 
+                } else {
+                    setError(data.msg || "Registration failed");
+                }
             } else {
-                setError("Invalid credentials");
+                const response = await login(username, password);
+                if (response.success) {
+                    localStorage.removeItem('token');
+                    localStorage.setItem('token', response.token);
+                    navigate('/');  
+                    window.location.reload(); 
+                } else {
+                    setError("Invalid credentials");
+                }
             }
-        } catch (err) {
-            setError("Login failed. Please try again.");
-        }
-    };
+        };
+    
 
     return (
         <Box sx={{
@@ -34,7 +60,7 @@ const LoginPage = () => {
         }}>
             <Paper elevation={3} sx={{ padding: 4, width: 300 }}>
                 <Typography variant="h4" component="h1" gutterBottom>
-                    Login
+                    {isSignUp ? "Sign Up" : "Sign In"}
                 </Typography>
                 {error && (
                     <Typography color="error" sx={{ mb: 2 }}>
@@ -63,7 +89,18 @@ const LoginPage = () => {
                         fullWidth
                         sx={{ mt: 2 }}
                     >
-                        Login
+                        {isSignUp ? "Sign Up" : "Sign In"}
+                    </Button>
+                    <Button 
+                        variant="text"
+                        fullWidth
+                        sx={{ mt: 1 }}
+                        onClick={() => {
+                            setIsSignUp(!isSignUp);
+                            setError("");
+                        }}
+                    >
+                        {isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up"}
                     </Button>
                 </form>
             </Paper>

@@ -19,3 +19,60 @@ export const signup = async (username, password) => {
     });
     return response.json();
 };
+
+export const getUserData = async (username) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`http://localhost:8080/api/users/${username}`, {
+            headers: {
+                'Authorization': token
+            }
+        });
+        const data = await response.json();
+        console.log('User data retrieved:', {
+            username: data.username,
+            favorites: data.favorites,
+            mustWatch: data.mustWatch
+        });
+        return data;
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        throw error;
+    }
+};
+
+export const updateUserFavorites = async (username, favorites) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:8080/api/users/${username}/favorites`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token,
+        },
+        body: JSON.stringify({ favorites }),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  };
+  
+  export const updateUserMustWatch = async (username, mustWatch) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:8080/api/users/${username}/mustWatch`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token,
+        },
+        body: JSON.stringify({ mustWatch }),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  };
