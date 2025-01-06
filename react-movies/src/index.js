@@ -16,6 +16,7 @@ import TopRatedMoviesPage from "./pages/topRatedMoviesPage.js";
 import PopularMoviesPage from "./pages/trendingMoviesPage.js";
 import TrendingMoviesPage from "./pages/trendingMoviesPage.js";
 import LoginPage from "./pages/loginPage";
+import ListsPage from "./pages/listsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,11 +28,10 @@ const queryClient = new QueryClient({
   },
 });
 
-// Similar to authenticate middleware in movies-api
+
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   if (!token) {
-    // Redirect similar to API's error response
     return <Navigate to="/login" replace />;
   }
   return children;
@@ -56,6 +56,7 @@ const App = () => {
             <Route path="/movies/trending" element={<ProtectedRoute><TrendingMoviesPage /></ProtectedRoute>} />
             <Route path="/movies/topRated" element={<ProtectedRoute><TopRatedMoviesPage /></ProtectedRoute>} />
             <Route path="/movies/mustWatch" element={<ProtectedRoute><MustWatchPage /></ProtectedRoute>} />
+            <Route path="/lists" element={<ProtectedRoute><ListsPage /></ProtectedRoute>} />
             <Route path="/reviews/form" element={<ProtectedRoute><AddMovieReviewPage /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

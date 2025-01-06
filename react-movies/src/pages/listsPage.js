@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { getUserLists } from '../api/lists-api';
-import { Button, TextField, Dialog, DialogTitle, DialogContent, 
-         DialogActions, List, ListItem, ListItemText } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import { getUserLists, createList } from '../api/lists-api';
+import { Button, TextField, Dialog, Box, Typography, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 
 const ListsPage = () => {
     const [open, setOpen] = useState(false);
-    const [newListName, setNewListName] = useState('');
+    const [listName, setListName] = useState('');
     const username = JSON.parse(atob(localStorage.getItem('token').split('.')[1])).username;
     
     const { data: lists, refetch } = useQuery(['lists', username], () => getUserLists(username));
 
-    const handleCreateList = async () => {
-        if (newListName.trim()) {
+    const handleCreate = async (e) => {
+        e.preventDefault(); // Add this to prevent default form submission
+        if (listName.trim()) {  // Check for non-empty trimmed name
             try {
-                await createList(username, newListName);
-                refetch();
-                setOpen(false);
-                setNewListName('');
+                const result = await createList(username, listName.trim());
+                if (result.success) {
+                    await refetch();  // Refetch lists after successful creation
+                    setListName('');
+                    setOpen(false);
+                }
             } catch (error) {
                 console.error('Error creating list:', error);
             }
@@ -26,45 +27,38 @@ const ListsPage = () => {
     };
 
     return (
-        <div>
-            <Button 
-                variant="contained" 
-                startIcon={<AddIcon />}
-                onClick={() => setOpen(true)}
-                sx={{ margin: 2 }}
-            >
-                Create New List
+        <Box sx={{ padding: 2 }}>
+            <Button variant="contained" onClick={() => setOpen(true)}>
+                Create List
             </Button>
 
-            <List>
-                {lists?.map((list) => (
-                    <ListItem key={list._id}>
-                        <ListItemText 
-                            primary={list.name}
-                            secondary={`${list.movies.length} movies`}
-                        />
-                    </ListItem>
-                ))}
-            </List>
+            {lists?.map(list => (
+                <Box key={list._id} sx={{ margin: 2, padding: 2, border: '1px solid grey' }}>
+                    <Typography>{list.name}</Typography>
+                    <Typography>{list.movies?.length || 0} movies</Typography>
+                </Box>
+            ))}
 
             <Dialog open={open} onClose={() => setOpen(false)}>
                 <DialogTitle>Create New List</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="List Name"
-                        fullWidth
-                        value={newListName}
-                        onChange={(e) => setNewListName(e.target.value)}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpen(false)}>Cancel</Button>
-                    <Button onClick={handleCreateList}>Create</Button>
-                </DialogActions>
+                <form onSubmit={handleCreate}>
+                    <DialogContent>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            label="List Name"
+                            fullWidth
+                            value={listName}
+                            onChange={(e) => setListName(e.target.value)}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setOpen(false)}>Cancel</Button>
+                        <Button type="submit">Create</Button>
+                    </DialogActions>
+                </form>
             </Dialog>
-        </div>
+        </Box>
     );
 };
 

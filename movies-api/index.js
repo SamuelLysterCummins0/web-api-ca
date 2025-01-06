@@ -7,6 +7,7 @@ import defaultErrHandler from './errHandler';
 import moviesRouter from './api/movies';   //import movies router
 import reviewsRouter from './api/reviews';
 import authenticate from './authenticate';
+import listsRouter from './api/lists';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(cors({
 app.use('/api/users', usersRouter);
 app.use('/api/movies', authenticate, moviesRouter);
 app.use('/api/reviews', authenticate, reviewsRouter);
+app.use('/api/lists', listsRouter); 
 app.use(defaultErrHandler);
 
 app.listen(port, () => {
