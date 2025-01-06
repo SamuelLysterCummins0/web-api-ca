@@ -18,6 +18,7 @@ import TrendingMoviesPage from "./pages/trendingMoviesPage.js";
 import LoginPage from "./pages/loginPage";
 import ListsPage from "./pages/listsPage";
 import ListDetailsPage from "./pages/listDetailPage";
+import ProfilePage from "./pages/profilePage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,6 +55,7 @@ const App = () => {
             <Route path="/movies/trending" element={<ProtectedRoute><TrendingMoviesPage /></ProtectedRoute>} />
             <Route path="/movies/topRated" element={<ProtectedRoute><TopRatedMoviesPage /></ProtectedRoute>} />
             <Route path="/movies/mustWatch" element={<ProtectedRoute><MustWatchPage /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/lists" element={<ProtectedRoute><ListsPage /></ProtectedRoute>} />
             <Route path="/lists/:username/:listId" element={<ProtectedRoute><ListDetailsPage /></ProtectedRoute>}/>
             <Route path="/reviews/form" element={<ProtectedRoute><AddMovieReviewPage /></ProtectedRoute>} />

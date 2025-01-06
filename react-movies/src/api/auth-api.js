@@ -76,3 +76,28 @@ export const updateUserFavorites = async (username, favorites) => {
       throw error;
     }
   };
+
+  export const getUserProfile = async (username) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:8080/api/users/${username}/profile`, {
+        headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+        }
+    });
+    return response.json();
+};
+
+export const updateUserProfile = async (username, profileData) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`http://localhost:8080/api/users/${username}/profile`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(profileData)
+    });
+    return response.json();
+};
+  
