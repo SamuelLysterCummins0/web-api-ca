@@ -32,13 +32,12 @@ router.post('/:username/lists', asyncHandler(async (req, res) => {
     res.status(201).json({ success: true, list });
 }));
 
-// Add movie to list
+
 router.post('/:username/lists/:listId/movies', asyncHandler(async (req, res) => {
     const list = await List.findById(req.params.listId);
     if (!list) {
         return res.status(404).json({ success: false, msg: 'List not found' });
     }
-    
     if (!list.movies.includes(req.body.movieId)) {
         list.movies.push(req.body.movieId);
         await list.save();

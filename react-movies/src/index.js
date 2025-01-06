@@ -17,6 +17,7 @@ import PopularMoviesPage from "./pages/trendingMoviesPage.js";
 import TrendingMoviesPage from "./pages/trendingMoviesPage.js";
 import LoginPage from "./pages/loginPage";
 import ListsPage from "./pages/listsPage";
+import ListDetailsPage from "./pages/listDetailPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,10 +45,7 @@ const App = () => {
         <SiteHeader />
         <MoviesContextProvider>
           <Routes>
-            {/* Public route */}
             <Route path="/login" element={<LoginPage />} />
-            
-            {/* Protected routes wrapped similar to API */}
             <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/movies/favorites" element={<ProtectedRoute><FavoriteMoviesPage /></ProtectedRoute>} />
             <Route path="/reviews/:id" element={<ProtectedRoute><MovieReviewPage /></ProtectedRoute>} />
@@ -57,6 +55,7 @@ const App = () => {
             <Route path="/movies/topRated" element={<ProtectedRoute><TopRatedMoviesPage /></ProtectedRoute>} />
             <Route path="/movies/mustWatch" element={<ProtectedRoute><MustWatchPage /></ProtectedRoute>} />
             <Route path="/lists" element={<ProtectedRoute><ListsPage /></ProtectedRoute>} />
+            <Route path="/lists/:username/:listId" element={<ProtectedRoute><ListDetailsPage /></ProtectedRoute>}/>
             <Route path="/reviews/form" element={<ProtectedRoute><AddMovieReviewPage /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
