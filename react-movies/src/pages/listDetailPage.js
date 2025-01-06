@@ -13,12 +13,12 @@ import RemoveFromListIcon from "../components/cardIcons/removeFromList";
 const ListDetailsPage = () => {
     const { username, listId } = useParams();
 
-    const { data: list, isLoading: listLoading } = useQuery(
+    const { data: list, isLoading: listLoading, refetch: listRefetch } = useQuery(
         ['list', listId],
         () => getListDetails(username, listId)
     );
 
-    const { data: movies, isLoading: moviesLoading } = useQuery(
+    const { data: movies, isLoading: moviesLoading, refetch: moviesRefetch } = useQuery(
         ['listMovies', list?.movies],
         async () => {
             if (!list?.movies?.length) return [];
@@ -27,7 +27,12 @@ const ListDetailsPage = () => {
             );
             return Promise.all(moviePromises);
         },
-        { enabled: !!list?.movies }
+        {  
+            enabled: !!list?.movies,
+            onSuccess: () => {
+                listRefetch(); 
+            }
+        }
     );
 
     if (listLoading || moviesLoading) {
@@ -39,7 +44,14 @@ const ListDetailsPage = () => {
             title={list.name}
             movies={movies || []}
             action={(movie) => (
-                <RemoveFromListIcon movie={movie} listId={listId} />
+                <RemoveFromListIcon 
+                    movie={movie} 
+                    listId={listId} 
+                    onRemove={() => {
+                        listRefetch();
+                        moviesRefetch();
+                    }}
+                />
             )}
         />
     );
