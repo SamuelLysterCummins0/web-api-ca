@@ -50,3 +50,15 @@ export const getListDetails = async (username, listId) => {
     });
     return response.json();
 };
+
+export const removeMovieFromList = async (username, listId, movieId) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${BASE_URL}/lists/${username}/lists/${listId}/movies/${movieId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+        }
+    });
+    return response.json();
+};

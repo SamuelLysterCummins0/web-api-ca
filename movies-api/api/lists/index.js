@@ -46,4 +46,16 @@ router.post('/:username/lists/:listId/movies', asyncHandler(async (req, res) => 
     res.status(200).json({ success: true, list });
 }));
 
+router.delete('/:username/lists/:listId/movies/:movieId', asyncHandler(async (req, res) => {
+    const list = await List.findById(req.params.listId);
+    if (!list) {
+        return res.status(404).json({ success: false, msg: 'List not found' });
+    }
+    
+    list.movies = list.movies.filter(id => id !== parseInt(req.params.movieId));
+    await list.save();
+    
+    res.status(200).json({ success: true, list });
+}));
+
 export default router;

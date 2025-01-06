@@ -8,6 +8,7 @@ import Spinner from '../components/spinner';
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import PageTemplate from '../components/templateMovieListPage';
+import RemoveFromListIcon from "../components/cardIcons/removeFromList";
 
 const ListDetailsPage = () => {
     const { username, listId } = useParams();
@@ -37,7 +38,9 @@ const ListDetailsPage = () => {
         <PageTemplate
             title={list.name}
             movies={movies || []}
-            action={() => null}
+            action={(movie) => (
+                <RemoveFromListIcon movie={movie} listId={listId} />
+            )}
         />
     );
 };
