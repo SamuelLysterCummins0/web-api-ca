@@ -58,4 +58,13 @@ router.delete('/:username/lists/:listId/movies/:movieId', asyncHandler(async (re
     res.status(200).json({ success: true, list });
 }));
 
+// Delete entire list
+router.delete('/:username/lists/:listId', asyncHandler(async (req, res) => {
+    const list = await List.findByIdAndDelete(req.params.listId);
+    if (!list) {
+        return res.status(404).json({ success: false, msg: 'List not found' });
+    }
+    res.status(200).json({ success: true });
+}));
+
 export default router;

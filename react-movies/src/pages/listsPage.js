@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import { getUserLists, createList } from '../api/lists-api';
-import { Button, TextField, Dialog, Box, Typography, DialogActions, DialogContent, DialogTitle, Paper } from '@mui/material';
+import { getUserLists, createList, deleteList } from '../api/lists-api';
+import { Button, TextField, Dialog, Box, Typography, DialogActions, DialogContent, DialogTitle, Paper, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const ListsPage = () => {
     const [open, setOpen] = useState(false);
@@ -28,6 +29,16 @@ const ListsPage = () => {
         }
     };
 
+    const handleDelete = async (listId, e) => {
+        e.stopPropagation(); 
+        try {
+            await deleteList(username, listId);
+            refetch();
+        } catch (error) {
+            console.error('Error deleting list:', error);
+        }
+    };
+
     return (
         <Box sx={{ padding: 2 }}>
             <Typography variant="h4" sx={{ mb: 2 }}>My Lists</Typography>
@@ -43,16 +54,28 @@ const ListsPage = () => {
                         margin: 2, 
                         padding: 2, 
                         cursor: 'pointer',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
                         '&:hover': {
                             backgroundColor: '#f5f5f5'
                         }
                     }}
                     onClick={() => navigate(`/lists/${username}/${list._id}`)}
                 >
-                    <Typography variant="h6">{list.name}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        {list.movies?.length || 0} movies
-                    </Typography>
+                    <Box>
+                        <Typography variant="h6">{list.name}</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            {list.movies?.length || 0} movies
+                        </Typography>
+                    </Box>
+                    <IconButton 
+                        onClick={(e) => handleDelete(list._id, e)}
+                        color="error"
+                        sx={{ '&:hover': { backgroundColor: 'rgba(211, 47, 47, 0.04)' } }}
+                    >
+                        <DeleteIcon />
+                    </IconButton>
                 </Paper>
             ))}
 
