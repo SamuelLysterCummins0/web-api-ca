@@ -153,4 +153,43 @@ async function authenticateUser(req, res) {
     }
 }
 
+// Get user profile
+router.get('/:username/profile', async (req, res) => {
+    try {
+        const user = await User.findByUserName(req.params.username);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({
+            displayName: user.profile.displayName || user.username,
+            bio: user.profile.bio,
+            joinDate: user.profile.joinDate
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Update user profile
+router.put('/:username/profile', async (req, res) => {
+    try {
+        const user = await User.findByUserName(req.params.username);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Update profile fields
+        if (req.body.displayName) user.profile.displayName = req.body.displayName;
+        if (req.body.bio) user.profile.bio = req.body.bio;
+
+        await user.save();
+        res.status(200).json({
+            success: true,
+            profile: user.profile
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating profile' });
+    }
+});
+
 export default router;
