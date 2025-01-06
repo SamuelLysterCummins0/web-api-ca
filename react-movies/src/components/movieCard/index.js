@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import Avatar from '@mui/material/Avatar';
 import React, { useContext  } from "react";
 import { MoviesContext } from "../../contexts/moviesContext";
+import AddToListIcon from "../cardIcons/addToList";
 
 export default function MovieCard({ movie, action }) {
   const { favorites, addToFavorites } = useContext(MoviesContext);
@@ -89,7 +90,7 @@ export default function MovieCard({ movie, action }) {
           More Info ...
         </Button>
       </Link>
-      
+      <AddToListIcon movie={movie} />
     </CardActions>
     </Card>
   );
